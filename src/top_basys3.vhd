@@ -91,24 +91,24 @@ begin
             o_floor     => w_floor1	   
 		 ); 
 		 
---    elevator_controller_fsm_2: elevator_controller_fsm
---		port map(
---            i_clk       => w_clk1,
---            i_reset     => w_fsm_reset,
---            is_stopped  => sw(14),
---            go_up_down  => sw(15),
---            o_floor     => w_floor2	   
---		 );
+    elevator_controller_fsm_2: elevator_controller_fsm
+		port map(
+            i_clk       => w_clk1,
+            i_reset     => w_fsm_reset,
+            is_stopped  => sw(14),
+            go_up_down  => sw(15),
+            o_floor     => w_floor2	   
+		 );
 	
 	TDM4_inst: TDM4
 		generic map ( k_WIDTH => 4) -- bits in input and output
         port map ( 
            i_clk		=> w_clk2,
            i_reset		=> btnU, -- asynchronous
-           i_D3 		=> "1111",
+           i_D3 		=> x"F",
            i_D2 		=> w_floor1,
-           i_D1 		=> "1111",
-           i_D0 		=> "1111",
+           i_D1 		=> x"F",
+           i_D0 		=> w_floor2,
            o_data		=> w_data,
            o_sel		=> an (3 downto 0)-- selected data line (one-cold)
 	   );
@@ -122,7 +122,7 @@ begin
         );
      
     clock_divider_2: clock_divider
-        generic map ( k_DIV => 	500000)
+        generic map ( k_DIV => 	250000)
         port map ( 	
             i_clk    => clk,
             i_reset  => w_clk_reset,
@@ -133,7 +133,7 @@ begin
 	
 	-- LED 15 gets the FSM slow clock signal. The rest are grounded.
 	led(15) <= w_clk1;
-	led (14 downto 0) <= "000000000000000";
+	led (14 downto 0) <= (others => '0');
 	
 	-- leave unused switches UNCONNECTED. Ignore any warnings this causes.
 	
